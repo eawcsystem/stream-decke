@@ -1,3 +1,5 @@
+const nodemailer = require('nodemailer');
+
 document.addEventListener('DOMContentLoaded', () => {
     const app = document.getElementById('app');
     showLoginPage();
@@ -34,10 +36,30 @@ document.addEventListener('DOMContentLoaded', () => {
         showConfirmationPage(email, password);
     }
 
-    function sendConfirmationCode(email) {
-        // Simulate sending an email with the confirmation code
-        console.log(`Sending confirmation code to ${email}`);
-        alert(`Confirmation code sent to ${email}`);
+    async function sendConfirmationCode(email) {
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'your-email@gmail.com',
+                pass: 'your-email-password'
+            }
+        });
+
+        const mailOptions = {
+            from: 'your-email@gmail.com',
+            to: email,
+            subject: 'Confirmation Code',
+            text: 'Your confirmation code is 1234'
+        };
+
+        try {
+            await transporter.sendMail(mailOptions);
+            console.log(`Confirmation code sent to ${email}`);
+            alert(`Confirmation code sent to ${email}`);
+        } catch (error) {
+            console.error('Error sending email:', error);
+            alert('Failed to send confirmation code');
+        }
     }
 
     function showConfirmationPage(email, password) {
